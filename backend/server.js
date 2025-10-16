@@ -13,3 +13,12 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
+const pool = new Pool ({
+  connectionString: process.env.DATABASE_URL,
+});
+
+pool.on('error', (err, client) => {
+  console.error('Unexpected error on idle PostgreSQL client:', err);
+  process.exit(-1);
+});
+
