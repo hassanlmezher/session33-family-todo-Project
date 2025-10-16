@@ -79,3 +79,18 @@ app.post('api/login', async (req, res) => {
   }
 });
 
+
+app.get('/api/profile', authenticateToken, async (req, res) => {
+  try{
+    const user = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [req.user.id]);
+    if(user.rows.length === 0) return res.status(404).json({ message: 'User not found' });
+    res.json({ user: user.rows[0] });
+  } catch (err) {
+    console.error('Profile Error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
